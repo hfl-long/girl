@@ -1,8 +1,10 @@
 package com.hfl.controller;
 
 import com.hfl.domain.Girl;
+import com.hfl.domain.Result;
 import com.hfl.repository.GirlRepository;
 import com.hfl.service.GirlService;
+import com.hfl.utils.ResultUtil;
 import java.util.List;
 import javax.validation.Valid;
 import org.slf4j.Logger;
@@ -49,16 +51,14 @@ public class GirlController {
      * @return
      */
     @PostMapping(value = "/girls")
-    public Girl girlAdd(@Valid Girl girl, BindingResult bindingResult){
+    public Result<Girl> girlAdd(@Valid Girl girl, BindingResult bindingResult){
         if (bindingResult.hasErrors())
         {
-            System.out.println(bindingResult.getFieldError().getDefaultMessage());
-            return null;
+            return ResultUtil.error(1,bindingResult.getFieldError().getDefaultMessage());
         }
          girl.setCupSize(girl.getCupSize());
          girl.setAge(girl.getAge());
-
-         return girlRepository.save(girl);
+         return ResultUtil.success(girlRepository.save(girl));
     }
 
     //查询一个女生
@@ -103,6 +103,12 @@ public class GirlController {
     @PostMapping(value = "/girls/two")
     public void girlTwo(){
      girlService.insertTwo();
+    }
+
+    @GetMapping(value = "/girls/getAge/{id}")
+    public void getAge(@PathVariable("id")Integer id) throws Exception {
+         girlService.getAge(id);
+
     }
 
 }
